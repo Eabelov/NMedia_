@@ -11,7 +11,6 @@ import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.PushToken
-import ru.netology.nmedia.entity.PostEntity
 
 private const val BASE_URL = "${BuildConfig.BASE_URL}/api/slow/"
 
@@ -41,7 +40,7 @@ interface ApiService {
 
     @GET("posts/{id}/before")
     suspend fun getBefore(
-        @Path("id") id: PostEntity,
+        @Path("id") id: Long,
         @Query("count") count: Int
     ): Response<List<Post>>
 

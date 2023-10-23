@@ -36,12 +36,11 @@ class PostRemoteMediator(
                     }
                 }
                 LoadType.PREPEND -> {
-                    val id = state.firstItemOrNull()?.id ?: return MediatorResult.Success(false)
-                    service.getAfter(id, state.config.pageSize)
+                    return MediatorResult.Success(true)
                 }
 
                 LoadType.APPEND -> {
-                    val id = state.lastItemOrNull() ?: return MediatorResult.Success(false)
+                    val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(false)
                     service.getBefore(id, state.config.pageSize)
                 }
             }
