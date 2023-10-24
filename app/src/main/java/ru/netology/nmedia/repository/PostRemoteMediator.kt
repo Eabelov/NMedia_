@@ -56,8 +56,6 @@ class PostRemoteMediator(
 
             appDb.withTransaction {
 
-                postDao.clear()
-
                 when (loadType) {
                     LoadType.REFRESH -> {
 
@@ -75,22 +73,16 @@ class PostRemoteMediator(
                         )
                     }
 
-                    LoadType.PREPEND -> {
-                        postRemoteKeyDao.insert(
-                            PostRemoteKeyEntity(
-                                PostRemoteKeyEntity.KeyType.AFTER,
-                                body.first().id
-                            )
-                        )
-                    }
-
                     LoadType.APPEND -> {
-                        postRemoteKeyDao.insert(
-                            PostRemoteKeyEntity(
-                                PostRemoteKeyEntity.KeyType.BEFORE,
-                                body.last().id
+                        if (postDao.isEmpty()) {
+                            // База данных пустая, записываем ключ BEFORE
+                            postRemoteKeyDao.insert(
+                                PostRemoteKeyEntity(
+                                    PostRemoteKeyEntity.KeyType.BEFORE,
+                                    body.last().id
+                                )
                             )
-                        )
+                        }
                     }
 
                     else -> Unit
