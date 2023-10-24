@@ -41,8 +41,12 @@ class PostRemoteMediator(
                 }
 
                 LoadType.APPEND -> {
-                    val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(false)
-                    service.getBefore(id, state.config.pageSize)
+                    val id = postRemoteKeyDao.min()
+                    if (id != null && id > 1) {
+                        service.getBefore(id, state.config.pageSize)
+                    } else {
+                        return MediatorResult.Success(true)
+                    }
                 }
             }
 
