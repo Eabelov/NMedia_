@@ -62,31 +62,31 @@ class PostRemoteMediator(
 
                 when (loadType) {
                     LoadType.REFRESH -> {
-
                         postRemoteKeyDao.insert(
-                            listOf(
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.AFTER,
-                                    body.first().id
-                                ),
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id
-                                )
+                            PostRemoteKeyEntity(
+                                PostRemoteKeyEntity.KeyType.AFTER,
+                                body.first().id,
                             )
                         )
-                    }
-
-                    LoadType.APPEND -> {
-                        if (postDao.isEmpty()) {
-                            // База данных пустая, записываем ключ BEFORE
+                        if (postDao.isEmpty()) { //Если база данных пуста
                             postRemoteKeyDao.insert(
                                 PostRemoteKeyEntity(
                                     PostRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id
+                                    body.last().id,
                                 )
                             )
                         }
+                    }
+
+                    LoadType.APPEND -> {
+
+                        postRemoteKeyDao.insert(
+                            PostRemoteKeyEntity(
+                                PostRemoteKeyEntity.KeyType.BEFORE,
+                                body.last().id
+                            )
+                        )
+
                     }
 
                     else -> Unit
