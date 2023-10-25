@@ -36,7 +36,7 @@ class PostLoadingViewHolder(
             retryButton.isVisible = loadState is LoadState.Error
 
             retryButton.setOnClickListener {
-                retryListener
+                retryListener()
             }
 
         }
