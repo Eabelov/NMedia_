@@ -37,7 +37,9 @@ class PostRemoteMediator(
                 }
 
                 LoadType.PREPEND -> {
-                    return MediatorResult.Success(true)
+                    val id = postRemoteKeyDao.max()
+                        ?: return MediatorResult.Success(false)
+                    service.getAfter(id, state.config.pageSize)
                 }
 
                 LoadType.APPEND -> {
@@ -62,24 +64,26 @@ class PostRemoteMediator(
 
                 when (loadType) {
                     LoadType.REFRESH -> {
+                        postDao.clear()
+
+                        postRemoteKeyDao.insert(
+                            PostRemoteKeyEntity(
+                                PostRemoteKeyEntity.KeyType.BEFORE,
+                                body.last().id,
+                            )
+                        )
+                    }
+
+                    LoadType.PREPEND -> {
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
                                 PostRemoteKeyEntity.KeyType.AFTER,
-                                body.first().id,
+                                body.first().id
                             )
                         )
-                        if (postDao.isEmpty()) { //Если база данных пуста
-                            postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.BEFORE,
-                                    body.last().id,
-                                )
-                            )
-                        }
                     }
 
                     LoadType.APPEND -> {
-
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
                                 PostRemoteKeyEntity.KeyType.BEFORE,
